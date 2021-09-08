@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workshop</title>
+  <link rel="icon" type="image/png" href="img/icon.png">
+  <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div id="app">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Turnos</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+          aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Listado
+                <span class="visually-hidden">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a data-bs-toggle="modal" data-bs-target="#modalTurno" class="nav-link" href="#">Nuevo Turno</a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </nav>
+    <main class="container">
+
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <ul class="nav nav-tabs">
+            <li class="nav-item active show">
+              <a class="nav-link" data-bs-toggle="tab" href="#pendientes">Pendientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#confirmados">Confirmados</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#cancelado">Cancelado</a>
+            </li>
+
+          </ul>
+          <div id="myTabContent" class="tab-content">
+
+
+            <div class="tab-pane fade active show" id="pendientes">
+              <div class="row mt-3">
+                <div class="col-md-10">
+                  <input v-model="filtroCliente" class="form-control" type="search" placeholder="Buscar">
+                </div>
+                <div class="col-md-2">
+
+                </div>
+              </div>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Estado</th>
+
+                    <th scope="col">Controles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(turno, index) in pendientes">
+                    <th scope="row"> {{ index +1}} </th>
+                    <td>{{turno.fecha}}</td>
+                    <td>{{turno.cliente}}</td>
+                    <td>{{turno.estado}}</td>
+
+                    <td>
+                      <button v-on:click="turnoConfirmar(turno, index)" class="btn btn-success btn-sm" type="button">A</button>
+                      <button v-on:click="turnoCancelar(turno, index)" class="btn btn-danger btn-sm" type="button">C</button>
+
+                    </td>
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <td>
+                    <p>Registros encontrados </p>
+                  </td>
+                </tfoot>
+              </table>
+            </div>
+            <div class="tab-pane fade" id="confirmados">
+              <div class="row mt-3">
+                <div class="col-md-10">
+                  <input v-model="filtroCliente" class="form-control" type="search" placeholder="Buscar">
+                </div>
+                <div class="col-md-2">
+
+                </div>
+              </div>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Estado</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(turno, index) in confirmados">
+                    <th scope="row"> {{ index +1}} </th>
+                    <td>{{turno.fecha}}</td>
+                    <td>{{turno.cliente}}</td>
+                    <td>{{turno.estado}}</td>
+
+
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <td>
+                    <p>Registros encontrados <span v-text="confirmadosCantidad"></span> </p>
+                  </td>
+                </tfoot>
+              </table>
+            </div>
+            <div class="tab-pane fade" id="cancelado">
+              <div class="row mt-3">
+                <div class="col-md-10">
+                  <input v-model="filtroCliente" class="form-control" type="search" placeholder="Buscar">
+                </div>
+                <div class="col-md-2">
+
+                </div>
+              </div>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Estado</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(turno, index) in cancelados">
+                    <th scope="row"> {{ index +1}} </th>
+                    <td>{{turno.fecha}}</td>
+                    <td>{{turno.cliente}}</td>
+                    <td v-text="turno.estado"></td>
+
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <td>
+                    <p>Registros encontrados <span v-text="cancelados.length"></span> </p>
+                  </td>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <pre>{{listadoFiltrado}}</pre>
+
+      <div class="modal fade" id="modalTurno" tabindex="-1" aria-labelledby="modalTurnoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTurnoLabel">Turno</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group mt-3">
+                  <label for="cliente">Cliente</label>
+                  <input v-model="turno.cliente" class="form-control" type="text">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="fecha">Fecha</label>
+                  <input v-model="turno.fecha" class="form-control" type="date">
+
+                </div>
+
+                <div class="form-group mt-3">
+
+                  <label for="detalle">Detalle</label>
+
+                  <textarea v-model="turno.detalle" class="form-control" cols="10" rows="4"></textarea>
+                </div>
+
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button v-on:click="turnoGuardar" type="button" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="libs/vue/vue.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
